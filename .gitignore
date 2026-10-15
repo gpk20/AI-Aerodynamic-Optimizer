@@ -1,0 +1,25 @@
+# Large generated data -- regenerate these by running the scripts,
+# rather than storing multi-megabyte generated files in the repo.
+airfoil_dataset.csv
+generated_airfoils.csv
+optimization_history.csv
+comparison_baseline.csv
+comparison_optimized.csv
+validation_comparison.csv
+
+# Raw airfoil geometry files -- download these yourself from the UIUC
+# Airfoil Database (see README for the link); no need to commit ~1,600
+# small files when they're one click away from the source.
+airfoils/
+
+# Unrelated personal folder sitting in this directory -- not part of
+# the project, so it shouldn't end up in the repo.
+pictures of stuff for portfoilio/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS/editor junk
+.DS_Store
+Thumbs.db

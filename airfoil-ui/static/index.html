@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Airfoil optimizer</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="sheet">
+
+  <aside class="setup" aria-label="Settings">
+    <section class="group">
+      <h2>Airfoil</h2>
+      <div class="search">
+        <input id="foil-q" type="text" role="combobox" autocomplete="off" spellcheck="false"
+               aria-label="Search airfoils" aria-controls="foil-list" aria-expanded="true"
+               placeholder="Search, e.g. naca2412 or e387">
+      </div>
+      <ul id="foil-list" class="foil-list" role="listbox" aria-label="Matching airfoils"></ul>
+      <p id="foil-note" class="note"></p>
+    </section>
+
+    <section class="group">
+      <h2>Flow</h2>
+      <div class="field">
+        <label for="alpha-n">Angle of attack</label>
+        <div class="num"><input id="alpha-n" type="text" inputmode="decimal" value="4"><span class="unit">deg</span></div>
+        <input id="alpha-r" class="slider" type="range" min="-10" max="20" step="0.5" value="4" aria-label="Angle of attack slider">
+        <p class="err" id="alpha-err" role="alert"></p>
+      </div>
+      <div class="field">
+        <label for="re-n">Reynolds number</label>
+        <div class="num"><input id="re-n" type="text" inputmode="decimal" value="1,000,000"></div>
+        <input id="re-r" class="slider" type="range" min="0" max="1000" step="1" value="0" aria-label="Reynolds number slider (logarithmic)">
+        <p class="err" id="re-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>Limits for the optimizer</h2>
+      <div class="field row">
+        <label for="tmin-n">Thinnest allowed</label>
+        <div class="num"><input id="tmin-n" type="text" inputmode="decimal"><span class="unit">% chord</span></div>
+        <p class="err" id="tmin-err" role="alert"></p>
+      </div>
+      <div class="field row">
+        <label for="tmax-n">Thickest allowed</label>
+        <div class="num"><input id="tmax-n" type="text" inputmode="decimal"><span class="unit">% chord</span></div>
+        <p class="err" id="tmax-err" role="alert"></p>
+      </div>
+      <div class="field row">
+        <label for="clmin-n">Lowest lift allowed (CL)</label>
+        <div class="num"><input id="clmin-n" type="text" inputmode="decimal"></div>
+        <p class="err" id="clmin-err" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="group run">
+      <button id="run" class="btn" type="button">Run optimizer</button>
+      <div id="run-state" class="run-state" aria-live="polite"></div>
+    </section>
+  </aside>
+
+  <main class="board">
+    <header class="head">
+      <h1 id="foil-name">Loading</h1>
+      <p id="foil-desc" class="desc"></p>
+      <p id="demo-note" class="demo" hidden></p>
+    </header>
+
+    <figure class="drawing">
+      <svg id="drawing" role="img" aria-labelledby="drawing-cap" viewBox="0 0 1000 340" preserveAspectRatio="xMidYMid meet"></svg>
+      <figcaption id="drawing-cap" class="sr">Airfoil outline drawn to scale along its chord</figcaption>
+    </figure>
+
+    <section class="results" aria-labelledby="res-h">
+      <h2 id="res-h">At the design point</h2>
+      <table class="tbl" id="tbl">
+        <thead>
+          <tr><th scope="col"><span class="sr">Quantity</span></th><th scope="col">Baseline</th><th scope="col">Optimized</th><th scope="col">Change</th></tr>
+        </thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+      <p id="verdict" class="verdict"></p>
+      <p id="tbl-msg" class="note" role="status"></p>
+    </section>
+
+    <section class="sweep" aria-labelledby="sw-h">
+      <h2 id="sw-h">Across angles of attack</h2>
+      <div id="sweep-empty" class="empty">Plots appear here once the optimizer has finished. They compare the baseline and the optimized shape from -4 to 16 degrees, and shade the angles where the optimized shape has the better L/D.</div>
+      <div id="sweep-grid" class="plots" hidden>
+        <div class="plot" id="plot-cl"></div>
+        <div class="plot" id="plot-cd"></div>
+        <div class="plot" id="plot-ld"></div>
+      </div>
+      <p id="sweep-key" class="key" hidden></p>
+    </section>
+
+    <section class="exports" id="exports" hidden aria-labelledby="ex-h">
+      <h2 id="ex-h">Coordinates</h2>
+      <ul class="ex-list" id="ex-list"></ul>
+    </section>
+  </main>
+
+  <footer class="titleblock" aria-label="Model sources">
+    <div class="cell name"><span class="v">Airfoil optimizer</span><span class="l">Predicts CL and CD, then searches for a better shape</span></div>
+    <div class="cell"><span class="l">Prediction model</span><span class="v" id="tb-primary">…</span></div>
+    <div class="cell"><span class="l">Check model</span><span class="v" id="tb-check">…</span></div>
+    <div class="cell"><span class="l">Optimizer</span><span class="v" id="tb-opt">…</span></div>
+    <div class="cell"><span class="l">Airfoil library</span><span class="v" id="tb-lib">…</span></div>
+  </footer>
+
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
